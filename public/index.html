@@ -622,7 +622,7 @@ html, body {
 // ─── Config & State ─────────────────────────────────────────────────────────
 
 const STATE = {
-  screen:      'home',    // home | searching | chat
+  screen:      'home',
   chatType:    'text',
   ws:          null,
   interests:   [],
@@ -640,6 +640,8 @@ const STATE = {
   serverUrl:   localStorage.getItem('drift_server') || 'ws://localhost:3000',
 };
 
+let reconnectLock = false;
+
 const ICE_SERVERS = [
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:stun1.l.google.com:19302' },
@@ -651,9 +653,9 @@ const ICE_SERVERS = [
 const $ = id => document.getElementById(id);
 
 const screens = {
-  home:     $('screen-home'),
-  search:   $('screen-search'),
-  chat:     $('screen-chat'),
+  home:   $('screen-home'),
+  search: $('screen-search'),
+  chat:   $('screen-chat'),
 };
 
 // ─── Screen navigation ───────────────────────────────────────────────────────
@@ -665,29 +667,37 @@ function showScreen(name) {
   if (el) el.classList.add('active');
 }
 
-// ─── Status badge ────────────────────────────────────────────────────────────
+// ─── Status ──────────────────────────────────────────────────────────────────
 
 function setStatus(online, text) {
   STATE.isOnline = online;
   $('statusBadge').className = 'status-badge ' + (online ? 'online' : 'offline');
   $('statusText').textContent = text;
   $('offlineNote').style.display = online ? 'none' : 'block';
-  $('btnText').disabled  = !online;
+  $('btnText').disabled = !online;
   $('btnVideo').disabled = !online;
 }
 
 // ─── WebSocket ───────────────────────────────────────────────────────────────
 
 function connect(url) {
-  if (STATE.ws) { try { STATE.ws.close(); } catch(_) {} }
+  if (reconnectLock) return;
+  reconnectLock = true;
+
+  if (STATE.ws) {
+    try { STATE.ws.close(); } catch {}
+    STATE.ws = null;
+  }
+
   try {
     const ws = new WebSocket(url);
     STATE.ws = ws;
 
     ws.onopen = () => {
-      console.log('[ws] connected to', url);
+      reconnectLock = false;
+      console.log('[ws] connected');
       localStorage.setItem('drift_server', url);
-      setStatus(true, `${countOnline() > 0 ? countOnline() + ' online · ' : ''}Connected`);
+      setStatus(true, 'Connected');
     };
 
     ws.onmessage = e => {
@@ -700,9 +710,10 @@ function connect(url) {
       console.log('[ws] disconnected');
       setStatus(false, 'Offline Mode');
       STATE.ws = null;
-      if (STATE.screen === 'chat' || STATE.screen === 'searching') {
-        addSystemMsg('Connection lost. Returning home…');
-        setTimeout(() => goHome(), 2000);
+
+      // ONLY auto-reconnect if user is not at home
+      if (STATE.screen !== 'home') {
+        setTimeout(() => connect(url), 2000);
       }
     };
 
@@ -710,41 +721,38 @@ function connect(url) {
       setStatus(false, 'Offline Mode');
     };
 
-  } catch(e) {
+  } catch (e) {
+    reconnectLock = false;
     setStatus(false, 'Offline Mode');
   }
 }
 
-function countOnline() { return 0; } // could be populated from server stats
-
 function wsSend(obj) {
-  if (STATE.ws && STATE.ws.readyState === WebSocket.OPEN) {
+  if (STATE.ws?.readyState === WebSocket.OPEN) {
     STATE.ws.send(JSON.stringify(obj));
   }
 }
 
-// ─── Server message handler ──────────────────────────────────────────────────
+// ─── Server messages ─────────────────────────────────────────────────────────
 
 async function handleServerMsg(msg) {
-  switch(msg.event) {
+  switch (msg.event) {
 
     case 'searching':
       $('searchSub').textContent = `Position in queue: ${msg.position || '?'}`;
       break;
 
     case 'matched':
-      STATE.connId  = msg.connId;
+      STATE.connId = msg.connId;
       STATE.isOfferer = msg.offerer;
-      const shared  = msg.shared || [];
-      switchToChatUI(shared);
+
+      switchToChatUI(msg.shared || []);
 
       if (STATE.chatType === 'video') {
         await initVideo();
         if (STATE.isOfferer) await makeOffer();
       } else {
-        // text mode — no WebRTC needed
         $('chatStatus').textContent = 'Connected';
-        $('chatStatus').classList.remove('waiting');
         $('peerIndicator').style.display = 'flex';
         addSystemMsg('✨ Connected! Say hi.');
       }
@@ -755,12 +763,16 @@ async function handleServerMsg(msg) {
       break;
 
     case 'answer':
-      if (STATE.pc) await STATE.pc.setRemoteDescription(new RTCSessionDescription(msg.answer));
+      if (STATE.pc) {
+        await STATE.pc.setRemoteDescription(new RTCSessionDescription(msg.answer));
+      }
       break;
 
     case 'ice':
       if (STATE.pc && msg.candidate) {
-        try { await STATE.pc.addIceCandidate(new RTCIceCandidate(msg.candidate)); } catch(_) {}
+        try {
+          await STATE.pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
+        } catch {}
       }
       break;
 
@@ -778,29 +790,16 @@ async function handleServerMsg(msg) {
 
     case 'peer_left':
       addSystemMsg('Stranger disconnected.');
-      $('chatStatus').textContent = 'Disconnected';
-      $('chatStatus').classList.add('waiting');
-      $('peerIndicator').style.display = 'none';
       cleanupPeer();
-      // offer to find next
-      setTimeout(() => {
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-primary';
-        btn.style.cssText = 'max-width:160px;margin:8px auto;display:block;';
-        btn.textContent = '⏩ Find Next';
-        btn.onclick = () => { btn.remove(); App.skip(); };
-        $('chatBody').appendChild(btn);
-        scrollChat();
-      }, 300);
       break;
 
     case 'stopped':
-      goHome();
+      goHome(false);
       break;
 
     case 'server_shutdown':
       addSystemMsg('Server restarting…');
-      setTimeout(() => goHome(), 1500);
+      setTimeout(() => goHome(false), 1500);
       break;
   }
 }
@@ -810,47 +809,35 @@ async function handleServerMsg(msg) {
 async function initVideo() {
   try {
     STATE.localStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-      audio: { echoCancellation: true, noiseSuppression: true },
+      video: true,
+      audio: true,
     });
+
     $('localVideo').srcObject = STATE.localStream;
-  } catch(e) {
-    addSystemMsg('Camera/mic not available. Continuing without video.');
+  } catch {
+    addSystemMsg('No camera/mic access.');
   }
 
   STATE.pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 
   if (STATE.localStream) {
-    STATE.localStream.getTracks().forEach(t => STATE.pc.addTrack(t, STATE.localStream));
+    STATE.localStream.getTracks().forEach(t =>
+      STATE.pc.addTrack(t, STATE.localStream)
+    );
   }
 
   STATE.pc.ontrack = e => {
     $('remoteVideo').srcObject = e.streams[0];
-    STATE.pc.remoteStream = e.streams[0];
     $('connectingOverlay').classList.remove('visible');
   };
 
   STATE.pc.onicecandidate = e => {
     if (e.candidate) wsSend({ event: 'ice', candidate: e.candidate });
   };
-
-  STATE.pc.onconnectionstatechange = () => {
-    const s = STATE.pc.connectionState;
-    if (s === 'connected') {
-      $('chatStatus').textContent = 'Video Connected';
-      $('chatStatus').classList.remove('waiting');
-      $('peerIndicator').style.display = 'flex';
-      $('connectingOverlay').classList.remove('visible');
-    }
-    if (s === 'disconnected' || s === 'failed') {
-      $('chatStatus').textContent = 'Video Lost';
-      $('connectingOverlay').classList.add('visible');
-    }
-  };
 }
 
 async function makeOffer() {
-  const offer = await STATE.pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
+  const offer = await STATE.pc.createOffer();
   await STATE.pc.setLocalDescription(offer);
   wsSend({ event: 'offer', offer: STATE.pc.localDescription });
 }
@@ -862,46 +849,45 @@ async function handleOffer(offer) {
   wsSend({ event: 'answer', answer: STATE.pc.localDescription });
 }
 
+// ─── Cleanup ────────────────────────────────────────────────────────────────
+
 function cleanupPeer() {
   if (STATE.pc) {
-    try { STATE.pc.close(); } catch(_) {}
+    try { STATE.pc.close(); } catch {}
     STATE.pc = null;
   }
+
   if (STATE.localStream) {
     STATE.localStream.getTracks().forEach(t => t.stop());
     STATE.localStream = null;
   }
+
   $('remoteVideo').srcObject = null;
-  $('localVideo').srcObject  = null;
-  STATE.connId    = null;
+  $('localVideo').srcObject = null;
+
+  STATE.connId = null;
   STATE.isOfferer = false;
 }
 
-// ─── UI helpers ──────────────────────────────────────────────────────────────
+// ─── UI ──────────────────────────────────────────────────────────────────────
 
-function switchToChatUI(sharedInterests) {
+function switchToChatUI(shared) {
   showScreen('chat');
+
   $('chatBody').innerHTML = '';
   $('videoChatMessages').innerHTML = '';
   $('chatStatus').textContent = 'Connecting…';
-  $('chatStatus').classList.add('waiting');
   $('peerIndicator').style.display = 'none';
-  $('msgInput').disabled = false;
-  $('typingIndicator').classList.remove('visible');
 
-  const videoMode = STATE.chatType === 'video';
-  $('videoArea').classList.toggle('hidden', !videoMode);
-  $('videoControls').style.display = videoMode ? 'flex' : 'none';
-  $('chatControls').style.display  = videoMode ? 'none' : 'flex';
+  const video = STATE.chatType === 'video';
 
-  if (videoMode) $('connectingOverlay').classList.add('visible');
+  $('videoArea').classList.toggle('hidden', !video);
+  $('videoControls').style.display = video ? 'flex' : 'none';
+  $('chatControls').style.display = video ? 'none' : 'flex';
 
-  if (sharedInterests.length) {
-    $('sharedTagEl').textContent = '✦ ' + sharedInterests.slice(0,3).join(', ');
-    $('sharedTagEl').style.display = 'flex';
-    addSystemMsg('Shared: ' + sharedInterests.join(', '));
+  if (shared.length) {
+    addSystemMsg('Shared: ' + shared.join(', '));
   } else {
-    $('sharedTagEl').style.display = 'none';
     addSystemMsg('✨ Connected! Say hi.');
   }
 }
@@ -911,19 +897,6 @@ function addMsg(from, text) {
   div.className = `msg ${from}`;
   div.textContent = text;
   $('chatBody').appendChild(div);
-  scrollChat();
-
-  // also add to video overlay
-  if (STATE.chatType === 'video') {
-    const vMsg = document.createElement('div');
-    vMsg.className = `video-msg ${from}`;
-    vMsg.textContent = (from === 'you' ? 'You: ' : '') + text;
-    $('videoChatMessages').appendChild(vMsg);
-    // cap at 4
-    const msgs = $('videoChatMessages').children;
-    if (msgs.length > 4) msgs[0].remove();
-    setTimeout(() => { try { vMsg.remove(); } catch(_) {} }, 8000);
-  }
 }
 
 function addSystemMsg(text) {
@@ -931,235 +904,87 @@ function addSystemMsg(text) {
   div.className = 'msg system';
   div.textContent = text;
   $('chatBody').appendChild(div);
-  scrollChat();
 }
 
-function scrollChat() {
-  const body = $('chatBody');
-  body.scrollTop = body.scrollHeight;
-}
+// ─── Navigation fixes ───────────────────────────────────────────────────────
 
-function showPeerTyping(show) {
-  clearTimeout(STATE.peerTypingTimer);
-  if (show) {
-    $('typingIndicator').classList.add('visible');
-    STATE.peerTypingTimer = setTimeout(() => showPeerTyping(false), 4000);
-  } else {
-    $('typingIndicator').classList.remove('visible');
-  }
-}
-
-function goHome() {
+function goHome(sendStop = true) {
   cleanupPeer();
-  wsSend({ event: 'stop' });
+  if (sendStop) wsSend({ event: 'stop' });
   showScreen('home');
 }
 
-// ─── App public interface ────────────────────────────────────────────────────
+// ─── App ─────────────────────────────────────────────────────────────────────
 
 const App = {
 
   init() {
-    // Load saved interests
-    try {
-      const saved = JSON.parse(localStorage.getItem('drift_interests') || '[]');
-      saved.forEach(i => this.addTagUI(i));
-    } catch(_) {}
-
-    // Load server URL
-    const url = $('serverUrl');
-    url.value = STATE.serverUrl;
-
-    // Try to connect
     connect(STATE.serverUrl);
-
-    // Auto-resize textarea
-    $('msgInput').addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-  },
-
-  reconnect() {
-    const url = $('serverUrl').value.trim() || 'ws://localhost:3000';
-    STATE.serverUrl = url;
-    connect(url);
   },
 
   start(type) {
     if (!STATE.isOnline) return;
+
     STATE.chatType = type;
-    const tags = [...document.querySelectorAll('.tag')].map(t => t.dataset.val);
-    STATE.interests = tags;
+    STATE.interests = [...document.querySelectorAll('.tag')]
+      .map(t => t.dataset.val);
 
-    // Show search screen
     showScreen('search');
-    $('searchIcon').textContent = type === 'video' ? '📹' : '💬';
-    $('searchSub').textContent  = 'matching your interests';
 
-    // Populate interest display
-    const container = $('searchInterests');
-    container.innerHTML = '';
-    tags.forEach(t => {
-      const span = document.createElement('span');
-      span.className = 'tag';
-      span.textContent = t;
-      container.appendChild(span);
+    wsSend({
+      event: 'search',
+      chatType: type,
+      interests: STATE.interests
     });
-
-    wsSend({ event: 'search', chatType: type, interests: tags });
   },
 
   stop() {
-    wsSend({ event: 'stop' });
-    cleanupPeer();
     goHome();
   },
 
   skip() {
-    if (!STATE.isOnline) return;
     cleanupPeer();
-    $('chatBody').innerHTML = '';
-    $('videoChatMessages').innerHTML = '';
-
-    if (STATE.chatType === 'video') $('connectingOverlay').classList.add('visible');
-    $('chatStatus').textContent = 'Finding next…';
-    $('chatStatus').classList.add('waiting');
-    $('peerIndicator').style.display = 'none';
-    $('sharedTagEl').style.display = 'none';
-
-    addSystemMsg('Finding next person…');
-    wsSend({ event: 'skip', chatType: STATE.chatType, interests: STATE.interests });
+    wsSend({
+      event: 'skip',
+      chatType: STATE.chatType,
+      interests: STATE.interests
+    });
   },
 
   sendMsg() {
     const input = $('msgInput');
-    const text  = input.value.trim();
-    if (!text || !STATE.isOnline) return;
-    if (!STATE.connId) { addSystemMsg('Not connected yet.'); return; }
+    const text = input.value.trim();
+    if (!text) return;
+
     wsSend({ event: 'message', text });
     addMsg('you', text);
+
     input.value = '';
-    input.style.height = 'auto';
-    // Stop typing notification
-    if (STATE.isTyping) {
-      wsSend({ event: 'stop_typing' });
-      STATE.isTyping = false;
-    }
   },
 
   msgKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter') {
       e.preventDefault();
       this.sendMsg();
     }
   },
 
-  onTyping() {
-    if (!STATE.connId) return;
-    clearTimeout(STATE.typingTimer);
-    if (!STATE.isTyping) {
-      STATE.isTyping = true;
-      wsSend({ event: 'typing' });
-    }
-    STATE.typingTimer = setTimeout(() => {
-      STATE.isTyping = false;
-      wsSend({ event: 'stop_typing' });
-    }, 2500);
-  },
-
-  interestKey(e) {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      this.commitInterest();
-    }
-    if (e.key === 'Backspace' && !e.target.value) {
-      const tags = document.querySelectorAll('.tag');
-      if (tags.length) tags[tags.length - 1].remove();
-      this.saveInterests();
-    }
-  },
-
-  interestInput(e) {
-    const val = e.target.value;
-    if (val.includes(',') || val.includes(' ')) this.commitInterest();
-    $('interestPlaceholder').classList.toggle('hidden',
-      val.length > 0 || document.querySelectorAll('.tag').length > 0);
-  },
-
-  commitInterest() {
-    const input = $('interestInput');
-    const val = input.value.trim().replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 28);
-    input.value = '';
-    if (!val || document.querySelectorAll('.tag').length >= 15) return;
-    this.addTagUI(val);
-    this.saveInterests();
-    $('interestPlaceholder').classList.add('hidden');
-  },
-
-  addTagUI(val) {
-    const tag = document.createElement('div');
-    tag.className = 'tag';
-    tag.dataset.val = val;
-    tag.innerHTML = `<span>${val}</span><span class="x">×</span>`;
-    tag.onclick = () => { tag.remove(); this.saveInterests(); this.checkPlaceholder(); };
-    $('interestBox').insertBefore(tag, $('interestInput'));
-  },
-
-  checkPlaceholder() {
-    const hasTags = document.querySelectorAll('.tag').length > 0;
-    const hasVal  = $('interestInput').value.length > 0;
-    $('interestPlaceholder').classList.toggle('hidden', hasTags || hasVal);
-  },
-
-  saveInterests() {
-    const vals = [...document.querySelectorAll('.tag')].map(t => t.dataset.val);
-    localStorage.setItem('drift_interests', JSON.stringify(vals));
-  },
-
   toggleMute() {
     STATE.isMuted = !STATE.isMuted;
-    if (STATE.localStream) {
-      STATE.localStream.getAudioTracks().forEach(t => t.enabled = !STATE.isMuted);
-    }
-    $('btnMute').textContent = STATE.isMuted ? '🔇 Unmute' : '🎤 Mute';
-    $('btnMute').classList.toggle('active', STATE.isMuted);
+    STATE.localStream?.getAudioTracks()
+      .forEach(t => t.enabled = !STATE.isMuted);
   },
 
   toggleCam() {
     STATE.isCamOff = !STATE.isCamOff;
-    if (STATE.localStream) {
-      STATE.localStream.getVideoTracks().forEach(t => t.enabled = !STATE.isCamOff);
-    }
-    $('btnCam').textContent = STATE.isCamOff ? '📵 Cam On' : '📹 Cam Off';
-    $('btnCam').classList.toggle('active', STATE.isCamOff);
-  },
-
-  showServerHelp() {
-    alert(
-      'DRIFT SERVER SETUP\n\n' +
-      '1. Install Node.js (nodejs.org)\n' +
-      '2. Put drift-server.js in a folder\n' +
-      '3. Run: npm install ws\n' +
-      '4. Run: node drift-server.js\n' +
-      '5. Enter ws://your-server-ip:3000 above\n\n' +
-      'Share your server IP with friends\n' +
-      'so they can connect to your server!'
-    );
+    STATE.localStream?.getVideoTracks()
+      .forEach(t => t.enabled = !STATE.isCamOff);
   },
 };
-
-// ─── Boot ────────────────────────────────────────────────────────────────────
 
 window.App = App;
 window.addEventListener('DOMContentLoaded', () => App.init());
 
-// Keyboard shortcut: Escape → go home
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && STATE.screen !== 'home') App.stop();
-});
-
-// Handle tab/window close gracefully
 window.addEventListener('beforeunload', () => {
   wsSend({ event: 'stop' });
 });

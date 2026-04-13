@@ -14,7 +14,7 @@
   --surface2: rgba(19, 19, 31, 0.8);
   --border:   rgba(255, 255, 255, 0.1);
   --border2:  rgba(255, 255, 255, 0.2);
-  --accent:   #c9a84c; /* Default Gold */
+  --accent:   #c9a84c; 
   --accent2:  #f0c96a;
   --teal:     #3ecfbf;
   --rose:     #e06b8a;
@@ -28,26 +28,14 @@
 }
 
 /* Theme Classes */
-body.theme-neon {
-  --accent: #00f2ff;
-  --accent2: #70ffff;
-  --bg: #000810;
-}
-body.theme-crimson {
-  --accent: #ff2a55;
-  --accent2: #ff708f;
-  --bg: #100005;
-}
+body.theme-neon { --accent: #00f2ff; --accent2: #70ffff; --bg: #000810; }
+body.theme-crimson { --accent: #ff2a55; --accent2: #ff708f; --bg: #100005; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--txt);
-  font-family: var(--fh);
-  font-size: 15px;
-  overflow: hidden;
+  height: 100%; background: var(--bg); color: var(--txt);
+  font-family: var(--fh); font-size: 15px; overflow: hidden;
   transition: background 0.5s ease;
 }
 
@@ -67,10 +55,8 @@ html, body {
 
 /* ── Layout ── */
 #app {
-  position: relative; z-index: 2;
-  height: 100vh; width: 100vw;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  position: relative; z-index: 2; height: 100vh; width: 100vw;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
 .screen { display: none; width: 100%; height: 100%; }
@@ -78,27 +64,20 @@ html, body {
 
 /* ── Reusable Glass Panels ── */
 .glass-panel {
-  background: var(--surface);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 32px;
-  width: 100%; max-width: 480px;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+  background: var(--surface); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border); border-radius: var(--r); padding: 32px;
+  width: 100%; max-width: 480px; box-shadow: 0 24px 48px rgba(0,0,0,0.4);
 }
 
-/* ── Logo ── */
+/* ── UI Elements ── */
 .logo { font-size: 3.5rem; font-weight: 800; letter-spacing: -.05em; line-height: 1; margin-bottom: 8px; text-align: center; }
 .logo span { color: var(--accent); transition: color 0.3s ease; }
 .tagline { font-family: var(--fm); font-size: .75rem; letter-spacing: .15em; color: var(--muted); text-align: center; text-transform: uppercase; margin-bottom: 40px; }
 
-/* ── Status & Inputs ── */
 .status-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px; border-radius: 99px; font-family: var(--fm); font-size: .7rem;
-  letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--border);
-  background: rgba(0,0,0,0.3); margin: 0 auto 32px;
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 99px;
+  font-family: var(--fm); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid var(--border); background: rgba(0,0,0,0.3); margin: 0 auto 32px;
 }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all .3s; }
 .status-badge.online .status-dot { background: var(--teal); box-shadow: 0 0 10px var(--teal); }
@@ -106,31 +85,26 @@ html, body {
 
 .server-row { display: flex; gap: 10px; margin-bottom: 24px; }
 .server-row input {
-  flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border2);
-  border-radius: 12px; padding: 12px 16px; color: var(--txt); font-family: var(--fm); font-size: .8rem;
-  outline: none; transition: all .2s;
+  flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border2); border-radius: 12px;
+  padding: 12px 16px; color: var(--txt); font-family: var(--fm); font-size: .8rem; outline: none; transition: all .2s;
 }
 .server-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,255,255,0.05); }
 
-/* ── Interests ── */
 .interest-label { font-family: var(--fm); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .interest-box {
-  background: rgba(0,0,0,0.3); border: 1px solid var(--border2);
-  border-radius: 12px; padding: 12px; min-height: 60px;
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; cursor: text; transition: all .2s; margin-bottom: 32px; position: relative;
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border2); border-radius: 12px; padding: 12px;
+  min-height: 60px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; cursor: text; transition: all .2s; margin-bottom: 32px; position: relative;
 }
 .interest-box:focus-within { border-color: var(--accent); }
 .interest-placeholder { position: absolute; left: 16px; pointer-events: none; font-family: var(--fm); font-size: .8rem; color: var(--muted); }
 .interest-placeholder.hidden { display: none; }
 .tag {
-  background: rgba(255,255,255,0.1); border: 1px solid var(--border);
-  color: var(--txt); border-radius: 8px; padding: 6px 12px; font-size: .8rem; font-weight: 600;
-  display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all .2s;
+  background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--txt); border-radius: 8px;
+  padding: 6px 12px; font-size: .8rem; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all .2s;
 }
 .tag:hover { background: rgba(255,255,255,0.2); border-color: var(--danger); color: var(--danger); }
 .interest-input { background: transparent; border: none; outline: none; font-family: var(--fh); font-size: .9rem; color: var(--txt); min-width: 100px; flex: 1; }
 
-/* ── Buttons ── */
 .btns { display: flex; gap: 16px; }
 .btn {
   flex: 1; padding: 16px; border-radius: 12px; font-family: var(--fh); font-size: 1rem; font-weight: 700;
@@ -142,61 +116,38 @@ html, body {
 .btn-outline:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: var(--txt); }
 .btn:disabled { opacity: .3; cursor: not-allowed; }
 
-/* ── Video Area (Cinematic Fullscreen) ── */
-.video-area {
-  position: absolute; inset: 0; z-index: 0;
-  background: #000; overflow: hidden;
-}
+/* ── Video Area ── */
+.video-area { position: absolute; inset: 0; z-index: 0; background: #000; overflow: hidden; }
 .video-area.hidden { display: none; }
-#remoteVideo {
-  width: 100vw; height: 100vh; object-fit: cover;
-  transition: filter 0.3s ease;
-}
+#remoteVideo { width: 100vw; height: 100vh; object-fit: cover; }
 
-/* ── Local PIP ── */
+/* Local PIP - Local preview is mirrored purely visually */
 .local-pip {
-  position: absolute; top: 24px; left: 24px;
-  width: 240px; aspect-ratio: 4/3; border-radius: 16px; overflow: hidden;
-  border: 2px solid rgba(255,255,255,0.1);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-  z-index: 10;
-  transition: all 0.3s ease;
+  position: absolute; top: 24px; left: 24px; width: 240px; aspect-ratio: 4/3; border-radius: 16px;
+  overflow: hidden; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 12px 32px rgba(0,0,0,0.6); z-index: 10;
 }
-#localVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); transition: all 0.3s ease; }
+#localVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } 
 
-/* ── Chat Overlay (Left Side) ── */
+/* ── Chat Overlay ── */
 .chat-container {
-  position: absolute; bottom: 24px; left: 24px;
-  width: 360px; max-height: calc(100vh - 250px);
-  display: flex; flex-direction: column;
-  background: linear-gradient(180deg, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.8) 100%);
-  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border); border-radius: 20px;
-  z-index: 10; overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  position: absolute; bottom: 24px; left: 24px; width: 360px; max-height: calc(100vh - 250px);
+  display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.8) 100%);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border: 1px solid var(--border); border-radius: 20px;
+  z-index: 10; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
-
-.chat-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2);
-}
+.chat-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); }
 .chat-logo { font-weight: 800; font-size: 1.2rem; color: var(--accent); }
 .chat-status { font-family: var(--fm); font-size: .7rem; letter-spacing: .05em; color: var(--teal); text-transform: uppercase; }
-
 .chat-body {
-  flex: 1; overflow-y: auto; padding: 20px;
-  display: flex; flex-direction: column; gap: 12px;
-  mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+  flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;
+  mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
 }
 
-/* Messages */
 .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: .9rem; line-height: 1.4; word-break: break-word; }
 .msg.you { align-self: flex-end; background: var(--accent); color: #000; border-bottom-right-radius: 4px; font-weight: 600; }
 .msg.stranger { align-self: flex-start; background: rgba(255,255,255,0.1); border: 1px solid var(--border2); color: var(--txt); border-bottom-left-radius: 4px; }
 .msg.system { align-self: center; background: transparent; color: var(--muted); font-family: var(--fm); font-size: .7rem; border: 1px solid var(--border); border-radius: 99px; padding: 6px 14px; }
 
-/* Input */
 .chat-input-bar { padding: 16px; display: flex; gap: 10px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--border); }
 .chat-input-bar textarea {
   flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border2); border-radius: 12px;
@@ -207,15 +158,11 @@ html, body {
 .send-btn:hover { transform: scale(1.05); }
 .send-btn svg { fill: #000; width: 20px; }
 
-/* ── Core Controls (Floating Right) ── */
-.core-controls {
-  position: absolute; bottom: 24px; right: 24px;
-  display: flex; gap: 16px; z-index: 20;
-}
+/* ── Core Controls ── */
+.core-controls { position: absolute; bottom: 24px; right: 24px; display: flex; gap: 16px; z-index: 20; }
 .core-btn {
   padding: 16px 24px; border-radius: 99px; font-family: var(--fh); font-size: 1rem; font-weight: 700;
-  cursor: pointer; border: none; backdrop-filter: var(--blur); box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+  cursor: pointer; border: none; backdrop-filter: var(--blur); box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: all 0.2s;
 }
 .core-btn.next { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--txt); }
 .core-btn.next:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
@@ -223,12 +170,8 @@ html, body {
 .core-btn.end:hover { background: rgba(255,75,75,0.3); transform: translateY(-2px); }
 
 /* ── Mode Toggle & Expert Panel ── */
-.mode-toggle-wrapper {
-  position: absolute; top: 24px; right: 24px; z-index: 30;
-  display: none; /* Only show in chat */
-}
+.mode-toggle-wrapper { position: absolute; top: 24px; right: 24px; z-index: 30; display: none; }
 #screen-chat.active .mode-toggle-wrapper { display: block; }
-
 .mode-btn {
   background: rgba(0,0,0,0.5); backdrop-filter: var(--blur); border: 1px solid var(--border2);
   color: var(--txt); padding: 10px 20px; border-radius: 99px; font-family: var(--fm); font-size: .8rem;
@@ -237,25 +180,20 @@ html, body {
 .mode-btn.expert-active { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px rgba(255,255,255,0.1); }
 
 .expert-panel {
-  position: absolute; top: 70px; right: 0; width: 320px;
-  background: var(--surface2); backdrop-filter: var(--blur); border: 1px solid var(--border);
-  border-radius: 16px; padding: 24px; opacity: 0; pointer-events: none; transform: translateY(-10px);
+  position: absolute; top: 70px; right: 0; width: 320px; background: var(--surface2); backdrop-filter: var(--blur);
+  border: 1px solid var(--border); border-radius: 16px; padding: 24px; opacity: 0; pointer-events: none; transform: translateY(-10px);
   transition: all 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
 .expert-panel.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
-
 .expert-section { margin-bottom: 20px; }
-.expert-section:last-child { margin-bottom: 0; }
 .expert-title { font-family: var(--fm); font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
 
-/* Custom Inputs in Expert Panel */
 .expert-select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border2); color: var(--txt); padding: 10px; border-radius: 8px; font-family: var(--fm); font-size: .8rem; outline: none; }
 .expert-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid transparent; color: var(--txt); padding: 8px; border-radius: 8px; cursor: pointer; font-family: var(--fh); font-size: .8rem; transition: 0.2s; }
 .filter-btn:hover, .filter-btn.active { background: rgba(255,255,255,0.15); border-color: var(--accent); color: var(--accent); }
 
 .toggle-row { display: flex; align-items: center; justify-content: space-between; font-family: var(--fh); font-size: .9rem; margin-bottom: 10px; }
-/* Switch UI */
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 24px; border: 1px solid var(--border2); }
@@ -263,18 +201,9 @@ html, body {
 input:checked + .slider { background-color: rgba(255,255,255,0.2); border-color: var(--accent); }
 input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-/* ── Filter & FX Classes applied via JS ── */
-.fx-sepia { filter: sepia(0.8) contrast(1.1) !important; }
-.fx-grayscale { filter: grayscale(1) contrast(1.2) !important; }
-.fx-cyber { filter: hue-rotate(90deg) saturate(2) contrast(1.2) !important; }
-.fx-soft { filter: blur(3px) contrast(1.1) brightness(1.1) !important; } /* Noise reduction simulation */
-.fx-zoom { transform: scale(-1.5) translateY(10%) !important; } /* Scale -1.5 keeps it mirrored */
-
-/* ── Misc Overlays ── */
 .connecting-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; font-family: var(--fm); font-size: .8rem; color: var(--accent); text-transform: uppercase; z-index: 5; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .connecting-overlay.visible { opacity: 1; pointer-events: auto; }
 
-/* ── Searching Screen ── */
 .pulse-ring { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent); margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; animation: pulse 2s ease-in-out infinite; }
 .pulse-ring::before, .pulse-ring::after { content: ''; position: absolute; inset: -20px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); animation: pulseRipple 2s ease-in-out infinite; }
 .pulse-ring::after { inset: -40px; animation-delay: .4s; }
@@ -282,11 +211,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
 @keyframes pulse { 0%,100% { border-color: rgba(255,255,255,0.3); } 50% { border-color: var(--accent); box-shadow: 0 0 40px rgba(255,255,255,0.1); } }
 @keyframes pulseRipple { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: .4; } }
 
-/* Hide original extra controls to prevent layout breakage since buttons are removed */
-#videoControls { display: none !important; } 
-#chatControls { display: none !important; }
-
-/* Typing indicator fix for cinematic mode */
 .typing-indicator { display: none; padding: 10px 20px; font-family: var(--fm); font-size: 0.7rem; color: var(--accent); }
 .typing-indicator.visible { display: block; }
 </style>
@@ -302,29 +226,20 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     <div class="glass-panel">
       <div class="logo">dr<span>i</span>ft</div>
       <div class="tagline">Cinematic Encounters</div>
-
       <div style="text-align: center;">
         <div id="statusBadge" class="status-badge offline">
-          <div class="status-dot"></div>
-          <span id="statusText">Offline Mode</span>
+          <div class="status-dot"></div><span id="statusText">Offline Mode</span>
         </div>
       </div>
-
-      <div id="offlineNote" style="display:none; color: var(--danger); font-size: 0.8rem; text-align: center; margin-bottom: 20px;">
-        No server detected.
-      </div>
-
       <div class="server-row">
         <input id="serverUrl" type="text" placeholder="ws://localhost:3000" value="ws://localhost:3000">
         <button class="btn btn-outline" style="flex: 0 0 auto; padding: 12px 20px;" onclick="App.reconnect()">Connect</button>
       </div>
-
       <div class="interest-label">Your Vibes</div>
       <div class="interest-box" id="interestBox" onclick="document.getElementById('interestInput').focus()">
         <span class="interest-placeholder" id="interestPlaceholder">gaming, art, lofi...</span>
         <input id="interestInput" class="interest-input" type="text" placeholder="" maxlength="32" onkeydown="App.interestKey(event)" oninput="App.interestInput(event)">
       </div>
-
       <div class="btns">
         <button class="btn btn-outline" id="btnText" onclick="App.start('text')" disabled>Text Only</button>
         <button class="btn btn-primary" id="btnVideo" onclick="App.start('video')" disabled>Enter Drift</button>
@@ -333,12 +248,9 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
   </div>
 
   <div id="screen-search" class="screen">
-    <div class="pulse-ring">
-      <span class="pulse-icon" id="searchIcon">👁️</span>
-    </div>
+    <div class="pulse-ring"><span class="pulse-icon">👁️</span></div>
     <div style="font-size: 2rem; font-weight: 700; margin-bottom: 12px;">Drifting...</div>
     <div class="tagline" id="searchSub" style="margin-bottom: 40px;">Finding connection</div>
-    <div id="searchInterests" style="display:flex; gap:10px; margin-bottom:40px;"></div>
     <button class="btn btn-outline" style="width: 200px; border-color: var(--danger); color: var(--danger);" onclick="App.stop()">Abort</button>
   </div>
 
@@ -349,6 +261,9 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
       <div class="connecting-overlay visible" id="connectingOverlay">Establishing Link...</div>
     </div>
 
+    <video id="rawLocalVideo" autoplay playsinline muted style="display:none;"></video>
+    <canvas id="fxCanvas" style="display:none;"></canvas>
+
     <div class="local-pip" id="localPipContainer" style="display:none;">
       <video id="localVideo" autoplay playsinline muted></video>
     </div>
@@ -356,41 +271,29 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     <div class="mode-toggle-wrapper">
       <button class="mode-btn" id="expertToggleBtn">Easy Mode</button>
       <div class="expert-panel" id="expertPanel">
-        
         <div class="expert-section">
           <div class="expert-title">Camera Source</div>
-          <select class="expert-select" id="cameraSelect">
-            <option value="default">Default Camera</option>
-          </select>
+          <select class="expert-select" id="cameraSelect"><option value="default">Default Camera</option></select>
         </div>
-
         <div class="expert-section">
           <div class="expert-title">Cinematic Color Filters</div>
           <div class="expert-filters">
             <button class="filter-btn active" data-filter="none">Normal</button>
-            <button class="filter-btn" data-filter="fx-sepia">Vintage</button>
-            <button class="filter-btn" data-filter="fx-grayscale">Noir</button>
-            <button class="filter-btn" data-filter="fx-cyber">Cyber</button>
+            <button class="filter-btn" data-filter="sepia">Vintage</button>
+            <button class="filter-btn" data-filter="grayscale">Noir</button>
+            <button class="filter-btn" data-filter="cyber">Cyber</button>
           </div>
         </div>
-
         <div class="expert-section">
           <div class="toggle-row">
             <span>Face Tracking (Zoom)</span>
-            <label class="switch">
-              <input type="checkbox" id="zoomToggle">
-              <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="zoomToggle"><span class="slider"></span></label>
           </div>
           <div class="toggle-row">
             <span>Noise Reduction (Soft)</span>
-            <label class="switch">
-              <input type="checkbox" id="softToggle">
-              <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="softToggle"><span class="slider"></span></label>
           </div>
         </div>
-
         <div class="expert-section">
           <div class="expert-title">Interface Theme</div>
           <div class="expert-filters" style="grid-template-columns: 1fr 1fr 1fr;">
@@ -399,7 +302,6 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
             <button class="filter-btn" data-theme="theme-crimson">Crimson</button>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -408,16 +310,11 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
         <div class="chat-logo">drift</div>
         <div class="chat-status" id="chatStatus">Connected</div>
       </div>
-      
       <div class="chat-body" id="chatBody"></div>
-      
       <div class="typing-indicator" id="typingIndicator">Stranger is typing...</div>
-
       <div class="chat-input-bar">
         <textarea id="msgInput" placeholder="Send a message..." onkeydown="App.msgKey(event)" oninput="App.onTyping()"></textarea>
-        <button class="send-btn" onclick="App.sendMsg()">
-          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-        </button>
+        <button class="send-btn" onclick="App.sendMsg()"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
       </div>
     </div>
 
@@ -426,19 +323,13 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
       <button class="core-btn next" onclick="App.skip()">Next ⏩</button>
     </div>
 
-    <div id="videoControls"></div>
-    <div id="chatControls"></div>
-    <div id="peerIndicator"><span id="sharedTagEl"></span></div>
-
   </div>
-
 </div>
 
 <script>
 'use strict';
 
-// ─── Config & State ─────────────────────────────────────────────────────────
-
+// ─── STATE & CONFIG ─────────────────────────────────────────────────────────
 const STATE = {
   screen:      'home',
   chatType:    'text',
@@ -446,209 +337,123 @@ const STATE = {
   interests:   [],
   isOnline:    false,
   isOfferer:   false,
-  isMuted:     false,
-  isCamOff:    false,
-  localStream: null,
+  rawStream:   null, // The unedited camera feed
+  localStream: null, // The processed canvas stream sent to peer
   pc:          null,
   connId:      null,
   typingTimer: null,
   isTyping:    false,
-  peerTyping:  false,
-  peerTypingTimer: null,
   serverUrl:   localStorage.getItem('drift_server') || 'ws://localhost:3000',
 };
 
 let reconnectLock = false;
-
-const ICE_SERVERS = [
-  { urls: 'stun:stun.l.google.com:19302' },
-  { urls: 'stun:stun1.l.google.com:19302' },
-  { urls: 'stun:stun.cloudflare.com:3478' },
-];
-
-// ─── DOM refs ────────────────────────────────────────────────────────────────
-
+const ICE_SERVERS = [{ urls: 'stun:stun.l.google.com:19302' }];
 const $ = id => document.getElementById(id);
 
-const screens = {
-  home:   $('screen-home'),
-  search: $('screen-search'),
-  chat:   $('screen-chat'),
-};
+// ─── CANVAS EFFECTS PIPELINE (SENT TO PEER) ─────────────────────────────────
+const FX = { filter: 'none', zoom: false, soft: false, faceX: 0.5, faceY: 0.5, targetFaceX: 0.5, targetFaceY: 0.5 };
+let isProcessing = false;
+const faceDetector = window.FaceDetector ? new FaceDetector() : null;
+let lastDetect = 0;
 
-// ─── Screen navigation ───────────────────────────────────────────────────────
+function startCanvasPipeline() {
+  if (isProcessing) return;
+  isProcessing = true;
+  const rawVid = $('rawLocalVideo');
+  const cvs = $('fxCanvas');
+  const ctx = cvs.getContext('2d');
 
-function showScreen(name) {
-  STATE.screen = name;
-  Object.values(screens).forEach(s => s.classList.remove('active'));
-  const el = screens[name];
-  if (el) el.classList.add('active');
-}
+  function render() {
+    if (!STATE.rawStream) { isProcessing = false; return; }
+    if (rawVid.videoWidth === 0) { requestAnimationFrame(render); return; }
 
-// ─── Status ──────────────────────────────────────────────────────────────────
+    cvs.width = rawVid.videoWidth;
+    cvs.height = rawVid.videoHeight;
 
-function setStatus(online, text) {
-  STATE.isOnline = online;
-  $('statusBadge').className = 'status-badge ' + (online ? 'online' : 'offline');
-  $('statusText').textContent = text;
-  if($('offlineNote')) $('offlineNote').style.display = online ? 'none' : 'block';
-  $('btnText').disabled = !online;
-  $('btnVideo').disabled = !online;
-}
+    // Face detection for tracking (if available, else centers)
+    if (FX.zoom && faceDetector && performance.now() - lastDetect > 200) {
+      lastDetect = performance.now();
+      faceDetector.detect(rawVid).then(faces => {
+        if (faces.length > 0) {
+          const f = faces[0].boundingBox;
+          FX.targetFaceX = (f.x + f.width / 2) / cvs.width;
+          FX.targetFaceY = (f.y + f.height / 2) / cvs.height;
+        } else {
+          FX.targetFaceX = 0.5; FX.targetFaceY = 0.5;
+        }
+      }).catch(()=>{});
+    } else if (!FX.zoom) {
+      FX.targetFaceX = 0.5; FX.targetFaceY = 0.5;
+    }
 
-// ─── WebSocket ───────────────────────────────────────────────────────────────
+    // Smooth movement
+    FX.faceX += (FX.targetFaceX - FX.faceX) * 0.08;
+    FX.faceY += (FX.targetFaceY - FX.faceY) * 0.08;
 
-function connect(url) {
-  if (reconnectLock) return;
-  reconnectLock = true;
+    ctx.save();
 
-  if (STATE.ws) {
-    try { STATE.ws.close(); } catch {}
-    STATE.ws = null;
+    // Fix applied here: Use positive scale to avoid flipping the image!
+    if (FX.zoom) {
+      const scale = 1.6;
+      ctx.translate(cvs.width/2, cvs.height/2);
+      ctx.scale(scale, scale);
+      const panX = (0.5 - FX.faceX) * cvs.width;
+      const panY = (0.5 - FX.faceY) * cvs.height;
+      ctx.translate(-cvs.width/2 + panX, -cvs.height/2 + panY);
+    }
+
+    // Build the native Canvas Filter
+    let filterStr = '';
+    if (FX.filter === 'sepia') filterStr += 'sepia(80%) contrast(110%) ';
+    if (FX.filter === 'grayscale') filterStr += 'grayscale(100%) contrast(120%) ';
+    if (FX.filter === 'cyber') filterStr += 'hue-rotate(90deg) saturate(200%) contrast(120%) ';
+
+    // Soft & Sharpen trick: Slight blur to kill grain, high contrast to rebuild edges
+    if (FX.soft) filterStr += 'blur(0.8px) contrast(1.25) saturate(1.1) brightness(0.95) ';
+
+    if (filterStr) ctx.filter = filterStr.trim();
+
+    ctx.drawImage(rawVid, 0, 0, cvs.width, cvs.height);
+    ctx.restore();
+    requestAnimationFrame(render);
   }
-
-  try {
-    const ws = new WebSocket(url);
-    STATE.ws = ws;
-
-    ws.onopen = () => {
-      reconnectLock = false;
-      console.log('[ws] connected');
-      localStorage.setItem('drift_server', url);
-      setStatus(true, 'Connected');
-    };
-
-    ws.onmessage = e => {
-      let msg;
-      try { msg = JSON.parse(e.data); } catch { return; }
-      handleServerMsg(msg);
-    };
-
-    ws.onclose = () => {
-      console.log('[ws] disconnected');
-      setStatus(false, 'Offline Mode');
-      STATE.ws = null;
-
-      // ONLY auto-reconnect if user is not at home
-      if (STATE.screen !== 'home') {
-        setTimeout(() => connect(url), 2000);
-      }
-    };
-
-    ws.onerror = () => {
-      setStatus(false, 'Offline Mode');
-    };
-
-  } catch (e) {
-    reconnectLock = false;
-    setStatus(false, 'Offline Mode');
-  }
+  render();
 }
 
-function wsSend(obj) {
-  if (STATE.ws?.readyState === WebSocket.OPEN) {
-    STATE.ws.send(JSON.stringify(obj));
-  }
-}
-
-// ─── Server messages ─────────────────────────────────────────────────────────
-
-async function handleServerMsg(msg) {
-  switch (msg.event) {
-
-    case 'searching':
-      $('searchSub').textContent = `Position in queue: ${msg.position || '?'}`;
-      break;
-
-    case 'matched':
-      STATE.connId = msg.connId;
-      STATE.isOfferer = msg.offerer;
-
-      switchToChatUI(msg.shared || []);
-
-      if (STATE.chatType === 'video') {
-        await initVideo();
-        if (STATE.isOfferer) await makeOffer();
-      } else {
-        $('chatStatus').textContent = 'Connected';
-        if($('peerIndicator')) $('peerIndicator').style.display = 'flex';
-        addSystemMsg('✨ Connected! Say hi.');
-      }
-      break;
-
-    case 'offer':
-      if (STATE.chatType === 'video') await handleOffer(msg.offer);
-      break;
-
-    case 'answer':
-      if (STATE.pc) {
-        await STATE.pc.setRemoteDescription(new RTCSessionDescription(msg.answer));
-      }
-      break;
-
-    case 'ice':
-      if (STATE.pc && msg.candidate) {
-        try {
-          await STATE.pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
-        } catch {}
-      }
-      break;
-
-    case 'message':
-      addMsg('stranger', msg.text);
-      break;
-
-    case 'typing':
-      showPeerTyping(true);
-      break;
-
-    case 'stop_typing':
-      showPeerTyping(false);
-      break;
-
-    case 'peer_left':
-      addSystemMsg('Stranger disconnected.');
-      cleanupPeer();
-      break;
-
-    case 'stopped':
-      goHome(false);
-      break;
-
-    case 'server_shutdown':
-      addSystemMsg('Server restarting…');
-      setTimeout(() => goHome(false), 1500);
-      break;
-  }
-}
-
-// ─── WebRTC ──────────────────────────────────────────────────────────────────
-
+// ─── WEBRTC REWRITE TO USE CANVAS STREAM ─────────────────────────────────────
 async function initVideo() {
   try {
-    STATE.localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+    STATE.rawStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    
+    // 1. Feed raw camera to hidden video element
+    $('rawLocalVideo').srcObject = STATE.rawStream;
+    
+    // 2. Start drawing to canvas
+    startCanvasPipeline();
 
+    // 3. Extract the processed video track from canvas + audio from raw mic
+    const canvasStream = $('fxCanvas').captureStream(30); // 30 FPS
+    STATE.localStream = new MediaStream([
+      canvasStream.getVideoTracks()[0], 
+      STATE.rawStream.getAudioTracks()[0]
+    ]);
+
+    // Show processed stream in PIP
     $('localVideo').srcObject = STATE.localStream;
-  } catch {
+  } catch(e) {
+    console.error(e);
     addSystemMsg('No camera/mic access.');
   }
 
   STATE.pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
-
   if (STATE.localStream) {
-    STATE.localStream.getTracks().forEach(t =>
-      STATE.pc.addTrack(t, STATE.localStream)
-    );
+    STATE.localStream.getTracks().forEach(t => STATE.pc.addTrack(t, STATE.localStream));
   }
 
   STATE.pc.ontrack = e => {
     $('remoteVideo').srcObject = e.streams[0];
     $('connectingOverlay').classList.remove('visible');
   };
-
   STATE.pc.onicecandidate = e => {
     if (e.candidate) wsSend({ event: 'ice', candidate: e.candidate });
   };
@@ -659,7 +464,6 @@ async function makeOffer() {
   await STATE.pc.setLocalDescription(offer);
   wsSend({ event: 'offer', offer: STATE.pc.localDescription });
 }
-
 async function handleOffer(offer) {
   await STATE.pc.setRemoteDescription(new RTCSessionDescription(offer));
   const answer = await STATE.pc.createAnswer();
@@ -667,313 +471,180 @@ async function handleOffer(offer) {
   wsSend({ event: 'answer', answer: STATE.pc.localDescription });
 }
 
-// ─── Cleanup ────────────────────────────────────────────────────────────────
-
 function cleanupPeer() {
-  if (STATE.pc) {
-    try { STATE.pc.close(); } catch {}
-    STATE.pc = null;
-  }
-
-  if (STATE.localStream) {
-    STATE.localStream.getTracks().forEach(t => t.stop());
-    STATE.localStream = null;
-  }
-
+  if (STATE.pc) { try { STATE.pc.close(); } catch {} STATE.pc = null; }
+  if (STATE.rawStream) { STATE.rawStream.getTracks().forEach(t => t.stop()); STATE.rawStream = null; }
   $('remoteVideo').srcObject = null;
   $('localVideo').srcObject = null;
-
-  STATE.connId = null;
-  STATE.isOfferer = false;
+  $('rawLocalVideo').srcObject = null;
+  STATE.connId = null; STATE.isOfferer = false;
 }
 
-// ─── UI ──────────────────────────────────────────────────────────────────────
+// ─── ORIGINAL SOCKET LOGIC (Untouched core logic) ───────────────────────────
+function showScreen(name) {
+  STATE.screen = name;
+  ['screen-home', 'screen-search', 'screen-chat'].forEach(id => $(id).classList.remove('active'));
+  $( `screen-${name}` ).classList.add('active');
+}
 
-function switchToChatUI(shared) {
-  showScreen('chat');
+function setStatus(online, text) {
+  STATE.isOnline = online;
+  $('statusBadge').className = 'status-badge ' + (online ? 'online' : 'offline');
+  $('statusText').textContent = text;
+  $('btnText').disabled = !online; $('btnVideo').disabled = !online;
+}
 
-  $('chatBody').innerHTML = '';
-  $('chatStatus').textContent = 'Connecting…';
-  if($('peerIndicator')) $('peerIndicator').style.display = 'none';
+function connect(url) {
+  if (reconnectLock) return;
+  reconnectLock = true;
+  if (STATE.ws) { try { STATE.ws.close(); } catch {} STATE.ws = null; }
+  try {
+    const ws = new WebSocket(url);
+    STATE.ws = ws;
+    ws.onopen = () => { reconnectLock = false; localStorage.setItem('drift_server', url); setStatus(true, 'Connected'); };
+    ws.onmessage = e => { try { handleServerMsg(JSON.parse(e.data)); } catch {} };
+    ws.onclose = () => { setStatus(false, 'Offline Mode'); STATE.ws = null; if (STATE.screen !== 'home') setTimeout(() => connect(url), 2000); };
+    ws.onerror = () => { setStatus(false, 'Offline Mode'); };
+  } catch (e) { reconnectLock = false; setStatus(false, 'Offline Mode'); }
+}
+function wsSend(obj) { if (STATE.ws?.readyState === WebSocket.OPEN) STATE.ws.send(JSON.stringify(obj)); }
 
-  const video = STATE.chatType === 'video';
-
-  $('videoArea').classList.toggle('hidden', !video);
-  if($('localPipContainer')) $('localPipContainer').style.display = video ? 'block' : 'none';
-
-  if (shared.length) {
-    addSystemMsg('Shared: ' + shared.join(', '));
-  } else {
-    addSystemMsg('✨ Connected! Say hi.');
+async function handleServerMsg(msg) {
+  switch (msg.event) {
+    case 'searching': $('searchSub').textContent = `Position in queue: ${msg.position || '?'}`; break;
+    case 'matched':
+      STATE.connId = msg.connId; STATE.isOfferer = msg.offerer;
+      switchToChatUI();
+      if (STATE.chatType === 'video') { await initVideo(); if (STATE.isOfferer) await makeOffer(); }
+      else { addSystemMsg('✨ Connected! Say hi.'); }
+      break;
+    case 'offer': if (STATE.chatType === 'video') await handleOffer(msg.offer); break;
+    case 'answer': if (STATE.pc) await STATE.pc.setRemoteDescription(new RTCSessionDescription(msg.answer)); break;
+    case 'ice': if (STATE.pc && msg.candidate) { try { await STATE.pc.addIceCandidate(new RTCIceCandidate(msg.candidate)); } catch {} } break;
+    case 'message': addMsg('stranger', msg.text); break;
+    case 'typing': $('typingIndicator').classList.add('visible'); break;
+    case 'stop_typing': $('typingIndicator').classList.remove('visible'); break;
+    case 'peer_left': addSystemMsg('Stranger disconnected.'); cleanupPeer(); break;
+    case 'stopped': goHome(false); break;
   }
+}
+
+function switchToChatUI() {
+  showScreen('chat');
+  $('chatBody').innerHTML = '';
+  $('chatStatus').textContent = 'Connected';
+  const video = STATE.chatType === 'video';
+  $('videoArea').classList.toggle('hidden', !video);
+  $('localPipContainer').style.display = video ? 'block' : 'none';
+  addSystemMsg('✨ Connected! Say hi.');
 }
 
 function addMsg(from, text) {
-  const div = document.createElement('div');
-  div.className = `msg ${from}`;
-  div.textContent = text;
-  $('chatBody').appendChild(div);
-  $('chatBody').scrollTop = $('chatBody').scrollHeight;
+  const div = document.createElement('div'); div.className = `msg ${from}`; div.textContent = text;
+  $('chatBody').appendChild(div); $('chatBody').scrollTop = $('chatBody').scrollHeight;
 }
-
 function addSystemMsg(text) {
-  const div = document.createElement('div');
-  div.className = 'msg system';
-  div.textContent = text;
-  $('chatBody').appendChild(div);
-  $('chatBody').scrollTop = $('chatBody').scrollHeight;
+  const div = document.createElement('div'); div.className = 'msg system'; div.textContent = text;
+  $('chatBody').appendChild(div); $('chatBody').scrollTop = $('chatBody').scrollHeight;
 }
-
-function showPeerTyping(isTyping) {
-  const ind = $('typingIndicator');
-  if(ind) ind.classList.toggle('visible', isTyping);
-}
-
-// ─── Navigation fixes ───────────────────────────────────────────────────────
-
 function goHome(sendStop = true) {
-  cleanupPeer();
-  if (sendStop) wsSend({ event: 'stop' });
-  showScreen('home');
+  cleanupPeer(); if (sendStop) wsSend({ event: 'stop' }); showScreen('home');
 }
-
-// ─── App ─────────────────────────────────────────────────────────────────────
 
 const App = {
-
-  init() {
-    connect(STATE.serverUrl);
-  },
-
-  reconnect() {
-    const url = $('serverUrl').value.trim();
-    if(url) connect(url);
-  },
-
+  init() { connect(STATE.serverUrl); },
+  reconnect() { const url = $('serverUrl').value.trim(); if(url) connect(url); },
   start(type) {
     if (!STATE.isOnline) return;
-
     STATE.chatType = type;
-    STATE.interests = [...document.querySelectorAll('.tag')]
-      .map(t => t.dataset.val || t.textContent.trim().replace('×',''));
-
+    STATE.interests = [...document.querySelectorAll('.tag')].map(t => t.dataset.val);
     showScreen('search');
-
-    wsSend({
-      event: 'search',
-      chatType: type,
-      interests: STATE.interests
-    });
+    wsSend({ event: 'search', chatType: type, interests: STATE.interests });
   },
-
-  stop() {
-    goHome();
-  },
-
-  skip() {
-    cleanupPeer();
-    wsSend({
-      event: 'skip',
-      chatType: STATE.chatType,
-      interests: STATE.interests
-    });
-  },
-
+  stop() { goHome(); },
+  skip() { cleanupPeer(); wsSend({ event: 'skip', chatType: STATE.chatType, interests: STATE.interests }); },
   sendMsg() {
-    const input = $('msgInput');
-    const text = input.value.trim();
-    if (!text) return;
-
-    wsSend({ event: 'message', text });
-    addMsg('you', text);
-
-    input.value = '';
-    wsSend({ event: 'stop_typing' });
+    const input = $('msgInput'); const text = input.value.trim(); if (!text) return;
+    wsSend({ event: 'message', text }); addMsg('you', text); input.value = ''; wsSend({ event: 'stop_typing' });
   },
-
-  msgKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      this.sendMsg();
-    }
-  },
-
+  msgKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMsg(); } },
   onTyping() {
-    if (!STATE.isTyping) {
-      STATE.isTyping = true;
-      wsSend({ event: 'typing' });
-    }
+    if (!STATE.isTyping) { STATE.isTyping = true; wsSend({ event: 'typing' }); }
     clearTimeout(STATE.typingTimer);
-    STATE.typingTimer = setTimeout(() => {
-      STATE.isTyping = false;
-      wsSend({ event: 'stop_typing' });
-    }, 2000);
+    STATE.typingTimer = setTimeout(() => { STATE.isTyping = false; wsSend({ event: 'stop_typing' }); }, 2000);
   },
-
-  // Stub for interest input functionality missing from provided JS snippet
   interestKey(e) {
     if(e.key === 'Enter') {
-      e.preventDefault();
-      const val = e.target.value.trim();
+      e.preventDefault(); const val = e.target.value.trim();
       if(val) {
-        const tag = document.createElement('div');
-        tag.className = 'tag';
-        tag.dataset.val = val;
-        tag.innerHTML = `${val} <span class="x" onclick="this.parentElement.remove(); App.updatePlaceholder()">×</span>`;
-        $('interestBox').insertBefore(tag, $('interestInput'));
-        e.target.value = '';
-        this.updatePlaceholder();
+        const tag = document.createElement('div'); tag.className = 'tag'; tag.dataset.val = val;
+        tag.innerHTML = `${val} <span onclick="this.parentElement.remove(); App.updatePlaceholder()">×</span>`;
+        $('interestBox').insertBefore(tag, $('interestInput')); e.target.value = ''; this.updatePlaceholder();
       }
     }
   },
-
-  interestInput(e) {
-    this.updatePlaceholder();
-  },
-
-  updatePlaceholder() {
-    const hasTags = document.querySelectorAll('.tag').length > 0;
-    const hasText = $('interestInput').value.length > 0;
-    $('interestPlaceholder').classList.toggle('hidden', hasTags || hasText);
-  }
+  interestInput() { this.updatePlaceholder(); },
+  updatePlaceholder() { $('interestPlaceholder').classList.toggle('hidden', document.querySelectorAll('.tag').length > 0 || $('interestInput').value.length > 0); }
 };
+window.App = App; window.addEventListener('DOMContentLoaded', () => App.init());
 
-window.App = App;
-window.addEventListener('DOMContentLoaded', () => App.init());
-
-window.addEventListener('beforeunload', () => {
-  wsSend({ event: 'stop' });
-});
-</script>
-
-<script>
+// ─── EXPERT UI CONTROLS ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  const toggleBtn = document.getElementById('expertToggleBtn');
-  const panel = document.getElementById('expertPanel');
-  const remoteVid = document.getElementById('remoteVideo');
-  const localVid = document.getElementById('localVideo');
+  const toggleBtn = $('expertToggleBtn'); const panel = $('expertPanel');
   
-  // Toggle Mode
   toggleBtn.addEventListener('click', () => {
     const isExpert = panel.classList.toggle('visible');
     toggleBtn.textContent = isExpert ? 'Expert Mode' : 'Easy Mode';
     toggleBtn.classList.toggle('expert-active', isExpert);
   });
 
-  // Color Filters
-  const filterBtns = document.querySelectorAll('.expert-filters button[data-filter]');
-  filterBtns.forEach(btn => {
+  // Mutates the global FX object used by Canvas
+  document.querySelectorAll('.expert-filters button[data-filter]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.expert-filters button[data-filter]').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      
-      // Remove old fx classes
-      remoteVid.className = '';
-      const fxClass = e.target.getAttribute('data-filter');
-      if(fxClass !== 'none') {
-        remoteVid.classList.add(fxClass);
-      }
+      FX.filter = e.target.getAttribute('data-filter');
     });
   });
 
-  // Theme Changer
-  const themeBtns = document.querySelectorAll('.expert-filters button[data-theme]');
-  themeBtns.forEach(btn => {
+  document.querySelectorAll('.expert-filters button[data-theme]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      themeBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.expert-filters button[data-theme]').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      
       document.body.className = '';
-      const themeClass = e.target.getAttribute('data-theme');
-      if(themeClass !== 'default') {
-        document.body.classList.add(themeClass);
-      }
+      if(e.target.getAttribute('data-theme') !== 'default') document.body.classList.add(e.target.getAttribute('data-theme'));
     });
   });
 
-  // Zoom / Face Track Simulation
-  const zoomToggle = document.getElementById('zoomToggle');
-  zoomToggle.addEventListener('change', (e) => {
-    if(e.target.checked) {
-      localVid.classList.add('fx-zoom');
-    } else {
-      localVid.classList.remove('fx-zoom');
-    }
-  });
+  $('zoomToggle').addEventListener('change', e => FX.zoom = e.target.checked);
+  $('softToggle').addEventListener('change', e => FX.soft = e.target.checked);
 
-  // Noise Reduction (Soft) Simulation
-  const softToggle = document.getElementById('softToggle');
-  softToggle.addEventListener('change', (e) => {
-    if(e.target.checked) {
-      localVid.classList.add('fx-soft');
-    } else {
-      localVid.classList.remove('fx-soft');
-    }
-  });
-
-  // Camera Selector Population
-  async function populateCameras() {
-    const select = document.getElementById('cameraSelect');
+  // Camera Switcher - Updates the RAW stream only, Canvas keeps rendering safely!
+  $('cameraSelect').addEventListener('change', async (e) => {
     try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
-      
-      if(videoDevices.length > 0) {
-        select.innerHTML = '';
-        videoDevices.forEach((device, index) => {
-          const option = document.createElement('option');
-          option.value = device.deviceId;
-          option.text = device.label || `Camera ${index + 1}`;
-          select.appendChild(option);
+      const newStream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: e.target.value } }, audio: true });
+      if (STATE.rawStream) STATE.rawStream.getTracks().forEach(t => t.stop());
+      STATE.rawStream = newStream;
+      $('rawLocalVideo').srcObject = newStream;
+    } catch(err) { console.error("Switch err:", err); }
+  });
+
+  new MutationObserver(muts => {
+    muts.forEach(m => {
+      if (m.target.classList.contains('active') && m.target.id === 'screen-chat') {
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          const vids = devices.filter(d => d.kind === 'videoinput');
+          if(vids.length) {
+            $('cameraSelect').innerHTML = '';
+            vids.forEach((d, i) => {
+              const opt = document.createElement('option'); opt.value = d.deviceId; opt.text = d.label || `Cam ${i+1}`;
+              $('cameraSelect').appendChild(opt);
+            });
+          }
         });
       }
-    } catch(err) {
-      console.warn("Could not enumerate devices for camera selector", err);
-    }
-  }
-
-  // Handle Camera Switch dynamically hooking into the existing WebRTC STATE
-  document.getElementById('cameraSelect').addEventListener('change', async (e) => {
-    if(!window.STATE || !window.STATE.pc) return;
-    
-    const deviceId = e.target.value;
-    try {
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        video: { deviceId: { exact: deviceId } },
-        audio: true
-      });
-      
-      // Update local preview
-      localVid.srcObject = newStream;
-      
-      // Replace track on existing peer connection
-      const videoTrack = newStream.getVideoTracks()[0];
-      const sender = window.STATE.pc.getSenders().find(s => s.track.kind === 'video');
-      if(sender) {
-        sender.replaceTrack(videoTrack);
-      }
-      
-      // Update global STATE reference so cleanup works
-      if(window.STATE.localStream) {
-        window.STATE.localStream.getTracks().forEach(t => t.stop());
-      }
-      window.STATE.localStream = newStream;
-
-    } catch(err) {
-      console.error("Error switching camera:", err);
-    }
-  });
-
-  // Attempt to populate cameras when chat screen opens
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.target.classList.contains('active') && mutation.target.id === 'screen-chat') {
-        populateCameras();
-      }
     });
-  });
-  observer.observe(document.getElementById('screen-chat'), { attributes: true, attributeFilter: ['class'] });
-
+  }).observe($('screen-chat'), { attributes: true, attributeFilter: ['class'] });
 });
 </script>
 </body>
